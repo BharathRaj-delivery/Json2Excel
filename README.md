@@ -12,7 +12,7 @@ npm install
 ## Running the Application
 To start the application, use the following command:
 ```
-node app.js
+node server.js
 ```
 
 ## Accessing the Web Page

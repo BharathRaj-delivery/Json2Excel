@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON to Excel Processor</title>
+</head>
+<body>
+    <h2>Upload JSON and Excel Format</h2>
+    <form id="uploadForm">
+        <label for="">Json Data</label>
+        <input type="file" name="jsonFile" id="jsonFile" accept=".json" required><br><br>
+        <label for="">Excel Format</label>
+        <input type="file" name="excelFile" id="excelFile" accept=".xlsx" required><br><br>
+        <button type="submit">Upload & Process</button>
+    </form>
+
+    <h3 id="status"></h3>
+    <progress id="progressBar" value="0" max="100" style="width: 100%; display: none;"></progress>
+    <a id="downloadLink" style="display: none;" href="#">Download Processed File</a>
+
+    <script>
+        document.getElementById("uploadForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append("jsonFile", document.getElementById("jsonFile").files[0]);
+            formData.append("excelFile", document.getElementById("excelFile").files[0]);
+
+            document.getElementById("status").innerText = "Processing...";
+            document.getElementById("downloadLink").style.display = "none";
+            const progressBar = document.getElementById("progressBar");
+            progressBar.style.display = "block";
+            progressBar.value = 0;
+
+            const response = await fetch("/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                document.getElementById("status").innerText = "✅ Processing completed!";
+                document.getElementById("downloadLink").href = result.downloadUrl;
+                document.getElementById("downloadLink").style.display = "block";
+            } else {
+                document.getElementById("status").innerText = "❌ Error: " + result.error;
+            }
+        });
+    </script>
+</body>
+</html>
